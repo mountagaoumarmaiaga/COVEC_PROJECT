@@ -40,21 +40,52 @@ choix ci-dessus : l'étape de construction lance `composer install` *et*
 `npm run build`. Deux dépôts séparés cacheraient à Laravel Cloud les sources de
 l'interface.
 
-Un point à ne pas manquer au premier déploiement : **l'application Laravel est
-dans `backend/`, pas à la racine.** Il faut le déclarer dans les réglages du
-projet, sinon Laravel Cloud cherche un `composer.json` à la racine et échoue.
+Laravel Cloud reconnaît les monorepos : à la détection, il propose les dossiers
+de premier niveau et demande lequel contient l'application.
 
-Étapes de construction, dans cet ordre :
+**Ce choix se fait à la création de l'application, et nulle part ailleurs.**
+Choisir `web/` — ou laisser Cloud détecter une application Node — produit un
+conteneur qui tente `npm start`, échoue faute de script `start`, et boucle
+jusqu'à l'abandon du déploiement. Il n'y a pas de réglage pour le rattraper
+après coup : il faut supprimer l'application Cloud et la recréer en
+sélectionnant **`backend`**.
+
+Le reste du dépôt reste lisible pendant la construction, ce qui permet de
+compiler l'interface depuis le dossier voisin ; seul `backend/` est déployé.
+
+### Réglages de l'environnement
+
+**Région** : `eu-central-1` (Francfort), la même que la base Neon. C'est ce qui
+fait passer l'écran de stock de 2,8 secondes à moins de 100 ms.
+
+**Commandes de construction** :
 
 ```bash
-composer install --no-dev --optimize-autoloader
-npm --prefix ../web ci && npm --prefix ../web run build
+composer install --no-dev --optimize-autoloader && npm --prefix ../web ci && npm --prefix ../web run build && php artisan optimize
+```
+
+Vite écrit dans `backend/public/app`, donc à l'intérieur du dossier déployé.
+
+**Commandes de déploiement** :
+
+```bash
 php artisan migrate --force
 ```
 
-Puis les réglages de production listés en tête de
-[`.env.example`](backend/.env.example), dont
-`SANCTUM_STATEFUL_DOMAINS` qui doit contenir le domaine servi.
+**Variables d'environnement** : celles listées en tête de
+[`.env.example`](backend/.env.example), dont `SANCTUM_STATEFUL_DOMAINS`, qui
+doit contenir le domaine servi — sans lui, toute requête de l'interface
+revient en 401.
+
+Le compte administrateur se crée ensuite, une seule fois, depuis l'onglet
+« Commands » :
+
+```bash
+php artisan db:seed --class=ReferentielSeeder
+```
+
+Il affiche un mot de passe tiré au hasard. Notez-le : il n'est montré qu'une
+fois. Pour le choisir vous-même, définissez `COVEC_ADMIN_PASSWORD` avant.
 
 ## Démarrage en développement
 
