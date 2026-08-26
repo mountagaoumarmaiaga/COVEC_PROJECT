@@ -1,0 +1,240 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@300;400;500;600&family=Alumni+Sans:wght@100;200;300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: oklch(97% 0.012 95);
+      --raised: oklch(99% 0.008 95);
+      --ink: oklch(25% 0.018 95);
+      --muted: oklch(45% 0.015 95);
+      --faint: oklch(55% 0.012 95);
+      --rule: oklch(25% 0.02 95 / 0.16);
+      --edge: oklch(25% 0.02 95 / 0.42);
+      --kinpaku-deep: oklch(61% 0.085 78);
+      --patina-deep: oklch(49% 0.08 188);
+      --vermilion: oklch(52% 0.16 35);
+      --display: "Alumni Sans", "Albert Sans", Arial, sans-serif;
+      --body: "Albert Sans", "Avenir Next", "Helvetica Neue", Arial, system-ui, sans-serif;
+      --mono: "SFMono-Regular", "Roboto Mono", "JetBrains Mono", Consolas, monospace;
+    }
+    body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--body); }
+    a { color: var(--patina-deep); text-decoration: none; }
+    a:hover { color: oklch(70% 0.12 188); }
+    table { border-collapse: collapse; width: 100%; }
+    .num { font-variant-numeric: tabular-nums; }
+  </style>
+</helmet>
+
+<div style="--accent: {{accent}}; width: 1280px; background: var(--paper); font-family: var(--body); color: var(--ink); padding: 0 0 64px">
+
+  <!-- Barre de marque : filet unique, pas de conteneur. -->
+  <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 32px; padding: 28px 64px 18px; border-bottom: 1px solid var(--rule)">
+    <div style="display: flex; align-items: baseline; gap: 14px">
+      <span style="font-family: var(--display); font-size: 22px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase">COVEC</span>
+      <span style="width: 1px; height: 14px; background: var(--edge)"></span>
+      <span style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted)">Suivi du carburant</span>
+    </div>
+    <div style="display: flex; align-items: baseline; gap: 26px; font-size: 13px">
+      <span style="color: var(--ink); border-bottom: 1px solid var(--accent); padding-bottom: 3px">Stock</span>
+      <a href="#">Sorties</a>
+      <a href="#">Entrées</a>
+      <a href="#">Référentiel</a>
+    </div>
+  </div>
+
+  <div style="padding: 0 64px">
+
+    <!-- Titre éditorial : surtitre interlettré, titre en graisse fine. -->
+    <div style="padding: 44px 0 36px">
+      <p style="margin: 0 0 14px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--kinpaku-deep)">Station dépôt &middot; août 2026</p>
+      <h1 style="margin: 0; font-family: var(--display); font-size: 72px; font-weight: 200; line-height: 1.02; letter-spacing: -0.01em">Stock et consommation</h1>
+      <p style="margin: 16px 0 0; max-width: 62ch; font-size: 15px; line-height: 1.8; color: var(--muted); text-wrap: pretty">Le stock n&rsquo;est jamais stocké : il se recalcule à chaque mouvement, entrées moins sorties. C&rsquo;est l&rsquo;historique qui fait foi.</p>
+    </div>
+
+    <!-- Chiffre héros. Le volume restant se lit d'un coup d'œil, à distance. -->
+    <div style="display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 48px; align-items: end; padding: 8px 0 40px; border-bottom: 1px solid var(--rule)">
+
+      <div style="grid-column: span 7">
+        <p style="margin: 0 0 6px; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted)">Litres restants dans la cuve</p>
+        <div style="display: flex; align-items: baseline; gap: 12px">
+          <span class="num" style="font-family: var(--display); font-size: 148px; font-weight: 100; line-height: 0.86; letter-spacing: -0.02em">11 457</span>
+          <span class="num" style="font-family: var(--display); font-size: 56px; font-weight: 200; line-height: 1; color: var(--muted)">,17</span>
+          <span style="font-family: var(--display); font-size: 40px; font-weight: 300; color: var(--kinpaku-deep)">L</span>
+        </div>
+
+        <!-- Jauge : un filet, pas une barre. Le repère à 100 % reste visible. -->
+        <div style="margin-top: 28px; position: relative; height: 6px; background: oklch(25% 0.02 95 / 0.08)">
+          <div style="position: absolute; inset: 0 42.7% 0 0; background: var(--accent)"></div>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-top: 10px; font-size: 12px; color: var(--muted)">
+          <span class="num">57,3 % de la capacité</span>
+          <span class="num">Cuve principale &middot; 20 000,00 L</span>
+        </div>
+      </div>
+
+      <div style="grid-column: span 5; display: flex; flex-direction: column; gap: 0">
+        <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--rule)">
+          <span style="font-size: 13px; color: var(--muted)">Entrées cumulées</span>
+          <span class="num" style="font-family: var(--display); font-size: 34px; font-weight: 300">22 000,00 <span style="font-size: 17px; color: var(--muted)">L</span></span>
+        </div>
+        <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--rule)">
+          <span style="font-size: 13px; color: var(--muted)">Sorties cumulées</span>
+          <span class="num" style="font-family: var(--display); font-size: 34px; font-weight: 300">10 542,83 <span style="font-size: 17px; color: var(--muted)">L</span></span>
+        </div>
+        <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--rule)">
+          <span style="font-size: 13px; color: var(--muted)">Prix moyen pondéré</span>
+          <span class="num" style="font-family: var(--display); font-size: 34px; font-weight: 300">794 <span style="font-size: 17px; color: var(--muted)">FCFA / L</span></span>
+        </div>
+        <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 14px 0">
+          <span style="font-size: 13px; color: var(--vermilion)">Pleins signalés</span>
+          <span class="num" style="font-family: var(--display); font-size: 34px; font-weight: 300; color: var(--vermilion)">2</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Totaux du mois : achats d'un côté, distribution de l'autre. -->
+    <div style="padding: 40px 0 44px; border-bottom: 1px solid var(--rule)">
+      <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 24px; margin-bottom: 26px">
+        <h2 style="margin: 0; font-family: var(--display); font-size: 34px; font-weight: 300; letter-spacing: -0.005em">Totaux d&rsquo;août 2026</h2>
+        <span style="font-size: 13px; color: var(--muted)">Achats facturés d&rsquo;un côté, litres distribués de l&rsquo;autre</span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--rule)">
+        <div style="background: var(--paper); padding: 22px 24px 20px">
+          <p style="margin: 0 0 12px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--faint)">Livraisons reçues</p>
+          <p class="num" style="margin: 0; font-family: var(--display); font-size: 42px; font-weight: 200; line-height: 1">5 000,00 <span style="font-size: 20px; color: var(--muted)">L</span></p>
+          <p style="margin: 8px 0 0; font-size: 12px; color: var(--muted)">1 livraison &middot; Total Énergies Mali</p>
+        </div>
+        <div style="background: var(--paper); padding: 22px 24px 20px">
+          <p style="margin: 0 0 12px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--faint)">Montant des achats</p>
+          <p class="num" style="margin: 0; font-family: var(--display); font-size: 42px; font-weight: 200; line-height: 1">4 060 000 <span style="font-size: 20px; color: var(--muted)">F</span></p>
+          <p style="margin: 8px 0 0; font-size: 12px; color: var(--muted)">Facturé par les fournisseurs</p>
+        </div>
+        <div style="background: var(--paper); padding: 22px 24px 20px">
+          <p style="margin: 0 0 12px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--faint)">Carburant distribué</p>
+          <p class="num" style="margin: 0; font-family: var(--display); font-size: 42px; font-weight: 200; line-height: 1">5 010,97 <span style="font-size: 20px; color: var(--muted)">L</span></p>
+          <p style="margin: 8px 0 0; font-size: 12px; color: var(--muted)">29 pleins &middot; 7 véhicules</p>
+        </div>
+        <div style="background: var(--paper); padding: 22px 24px 20px">
+          <p style="margin: 0 0 12px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--faint)">Valorisation des sorties</p>
+          <p class="num" style="margin: 0; font-family: var(--display); font-size: 42px; font-weight: 200; line-height: 1">3 979 166 <span style="font-size: 20px; color: var(--muted)">F</span></p>
+          <p style="margin: 8px 0 0; font-size: 12px; color: var(--muted)">Au prix moyen pondéré</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Consommation par véhicule. -->
+    <div style="padding: 44px 0 0">
+      <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 24px; margin-bottom: 8px">
+        <h2 style="margin: 0; font-family: var(--display); font-size: 34px; font-weight: 300; letter-spacing: -0.005em">Consommation par véhicule</h2>
+        <div style="display: flex; align-items: baseline; gap: 20px; font-size: 13px">
+          <span style="color: var(--ink); border-bottom: 1px solid var(--accent); padding-bottom: 3px">Août 2026</span>
+          <a href="#">Depuis l&rsquo;origine</a>
+          <a href="#">Export Excel</a>
+        </div>
+      </div>
+      <p style="margin: 0 0 22px; font-size: 13px; color: var(--muted)">L/100 km pour les véhicules et camions, L/h pour les engins et groupes électrogènes.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th style="text-align: left; padding: 0 0 10px; border-bottom: 1px solid var(--edge); font-family: var(--mono); font-size: 11px; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted)">Code</th>
+            <th style="text-align: left; padding: 0 0 10px; border-bottom: 1px solid var(--edge); font-family: var(--mono); font-size: 11px; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted)">Désignation</th>
+            <th style="text-align: right; padding: 0 0 10px; border-bottom: 1px solid var(--edge); font-family: var(--mono); font-size: 11px; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted)">Pleins</th>
+            <th style="text-align: right; padding: 0 0 10px; border-bottom: 1px solid var(--edge); font-family: var(--mono); font-size: 11px; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted)">Litres</th>
+            <th style="text-align: right; padding: 0 0 10px; border-bottom: 1px solid var(--edge); font-family: var(--mono); font-size: 11px; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted)">Distance</th>
+            <th style="text-align: right; padding: 0 0 10px; border-bottom: 1px solid var(--edge); font-family: var(--mono); font-size: 11px; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted)">Moyenne</th>
+            <th style="text-align: right; padding: 0 0 10px; border-bottom: 1px solid var(--edge); font-family: var(--mono); font-size: 11px; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted)">Signalés</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding: 15px 0; border-bottom: 1px solid var(--rule); font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em">CM-001</td>
+            <td style="padding: 15px 0; border-bottom: 1px solid var(--rule); font-size: 14px">Mercedes Actros &mdash; benne 20 t</td>
+            <td class="num" style="padding: 15px 0; border-bottom: 1px solid var(--rule); text-align: right; font-size: 14px; color: var(--muted)">3</td>
+            <td class="num" style="padding: 15px 0; border-bottom: 1px solid var(--rule); text-align: right; font-size: 14px">459,17 L</td>
+            <td class="num" style="padding: 15px 0; border-bottom: 1px solid var(--rule); text-align: right; font-size: 14px; color: var(--muted)">1 366 km</td>
+            <td class="num" style="padding: 15px 0; border-bottom: 1px solid var(--rule); text-align: right; font-family: var(--display); font-size: 21px; font-weight: 400">33,61 <span style="font-size: 12px; font-family: var(--body); color: var(--muted)">L/100 km</span></td>
+            <td style="padding: 15px 0; border-bottom: 1px solid var(--rule); text-align: right; font-size: 14px; color: var(--faint)">&mdash;</td>
+          </tr>
+          <tr>
+            <td style="padding: 15px 0; border-bottom: 1px solid var(--rule); font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em">CM-002</td>
+            <td style="padding: 15px 0; border-bottom: 1px solid var(--rule); font-size: 14px">Renault Kerax &mdash; citerne à eau</td>
+            <td class="num" style="padding: 15px 0; border-bottom: 1px solid var(--rule); text-align: right; font-size: 14px; color: var(--muted)">5</td>
+            <td class="num" style="padding: 15px 0; border-bottom: 1px solid var(--rule); text-align: right; font-size: 14px">947,71 L</td>
+            <td class="num" style="padding: 15px 0; border-bottom: 1px solid var(--rule); text-align: right; font-size: 14px; color: var(--muted)">2 422 km</td>
+            <td class="num" style="padding: 15px 0; border-bottom: 1px solid var(--rule); text-align: right; font-family: var(--display); font-size: 21px; font-weight: 400">39,13 <span style="font-size: 12px; font-family: var(--body); color: var(--muted)">L/100 km</span></td>
+            <td style="padding: 15px 0; border-bottom: 1px solid var(--rule); text-align: right; font-size: 14px; color: var(--faint)">&mdash;</td>
+          </tr>
+          <tr>
+            <td style="padding: 15px 0; border-bottom: 1px solid var(--rule); font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em">EN-001</td>
+            <td style="padding: 15px 0; border-bottom: 1px solid var(--rule); font-size: 14px">Pelle hydraulique Caterpillar 320</td>
+            <td class="num" style="padding: 15px 0; border-bottom: 1px solid var(--rule); text-align: right; font-size: 14px; color: var(--muted)">4</td>
+            <td class="num" style="padding: 15px 0; border-bottom: 1px solid var(--rule); text-align: right; font-size: 14px">712,08 L</td>
+            <td class="num" style="padding: 15px 0; border-bottom: 1px solid var(--rule); text-align: right; font-size: 14px; color: var(--muted)">40 h</td>
+            <td class="num" style="padding: 15px 0; border-bottom: 1px solid var(--rule); text-align: right; font-family: var(--display); font-size: 21px; font-weight: 400">17,80 <span style="font-size: 12px; font-family: var(--body); color: var(--muted)">L/h</span></td>
+            <td style="padding: 15px 0; border-bottom: 1px solid var(--rule); text-align: right; font-size: 14px; color: var(--faint)">&mdash;</td>
+          </tr>
+          <tr>
+            <td style="padding: 15px 0; border-bottom: 1px solid var(--rule); font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em">EN-002</td>
+            <td style="padding: 15px 0; border-bottom: 1px solid var(--rule); font-size: 14px">Chargeuse Komatsu WA320</td>
+            <td class="num" style="padding: 15px 0; border-bottom: 1px solid var(--rule); text-align: right; font-size: 14px; color: var(--muted)">4</td>
+            <td class="num" style="padding: 15px 0; border-bottom: 1px solid var(--rule); text-align: right; font-size: 14px">660,15 L</td>
+            <td class="num" style="padding: 15px 0; border-bottom: 1px solid var(--rule); text-align: right; font-size: 14px; color: var(--muted)">37 h</td>
+            <td class="num" style="padding: 15px 0; border-bottom: 1px solid var(--rule); text-align: right; font-family: var(--display); font-size: 21px; font-weight: 400">17,84 <span style="font-size: 12px; font-family: var(--body); color: var(--muted)">L/h</span></td>
+            <td style="padding: 15px 0; border-bottom: 1px solid var(--rule); text-align: right"><span class="num" style="display: inline-flex; align-items: center; gap: 6px; padding: 3px 9px; border: 1px solid oklch(52% 0.16 35 / 0.4); border-radius: 3px; font-size: 12px; color: var(--vermilion)">1 plein</span></td>
+          </tr>
+          <tr>
+            <td style="padding: 15px 0; border-bottom: 1px solid var(--rule); font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em">GE-001</td>
+            <td style="padding: 15px 0; border-bottom: 1px solid var(--rule); font-size: 14px">Groupe électrogène 250 kVA</td>
+            <td class="num" style="padding: 15px 0; border-bottom: 1px solid var(--rule); text-align: right; font-size: 14px; color: var(--muted)">5</td>
+            <td class="num" style="padding: 15px 0; border-bottom: 1px solid var(--rule); text-align: right; font-size: 14px">1 742,32 L</td>
+            <td class="num" style="padding: 15px 0; border-bottom: 1px solid var(--rule); text-align: right; font-size: 14px; color: var(--muted)">46 h</td>
+            <td class="num" style="padding: 15px 0; border-bottom: 1px solid var(--rule); text-align: right; font-family: var(--display); font-size: 21px; font-weight: 400">37,88 <span style="font-size: 12px; font-family: var(--body); color: var(--muted)">L/h</span></td>
+            <td style="padding: 15px 0; border-bottom: 1px solid var(--rule); text-align: right; font-size: 14px; color: var(--faint)">&mdash;</td>
+          </tr>
+          <tr>
+            <td style="padding: 15px 0; border-bottom: 1px solid var(--rule); font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em">VL-001</td>
+            <td style="padding: 15px 0; border-bottom: 1px solid var(--rule); font-size: 14px">Toyota Hilux double cabine</td>
+            <td class="num" style="padding: 15px 0; border-bottom: 1px solid var(--rule); text-align: right; font-size: 14px; color: var(--muted)">4</td>
+            <td class="num" style="padding: 15px 0; border-bottom: 1px solid var(--rule); text-align: right; font-size: 14px">237,98 L</td>
+            <td class="num" style="padding: 15px 0; border-bottom: 1px solid var(--rule); text-align: right; font-size: 14px; color: var(--muted)">2 039 km</td>
+            <td class="num" style="padding: 15px 0; border-bottom: 1px solid var(--rule); text-align: right; font-family: var(--display); font-size: 21px; font-weight: 400">11,67 <span style="font-size: 12px; font-family: var(--body); color: var(--muted)">L/100 km</span></td>
+            <td style="padding: 15px 0; border-bottom: 1px solid var(--rule); text-align: right; font-size: 14px; color: var(--faint)">&mdash;</td>
+          </tr>
+          <tr>
+            <td style="padding: 15px 0; font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em">VL-002</td>
+            <td style="padding: 15px 0; font-size: 14px">Toyota Land Cruiser station</td>
+            <td class="num" style="padding: 15px 0; text-align: right; font-size: 14px; color: var(--muted)">4</td>
+            <td class="num" style="padding: 15px 0; text-align: right; font-size: 14px">251,56 L</td>
+            <td class="num" style="padding: 15px 0; text-align: right; font-size: 14px; color: var(--muted)">1 942 km</td>
+            <td class="num" style="padding: 15px 0; text-align: right; font-family: var(--display); font-size: 21px; font-weight: 400">12,95 <span style="font-size: 12px; font-family: var(--body); color: var(--muted)">L/100 km</span></td>
+            <td style="padding: 15px 0; text-align: right; font-size: 14px; color: var(--faint)">&mdash;</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p style="margin: 28px 0 0; padding-top: 18px; border-top: 1px solid var(--rule); font-size: 12px; color: var(--faint)">Stock arrêté au 25/08/2026. Le premier plein d&rsquo;un véhicule ne produit pas de consommation : il sert de repère au compteur.</p>
+    </div>
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"accent":{"editor":"color","default":"#f7b500","options":["#f7b500","#0e7490","#b45309","#1f2940"],"section":"Th&#232;me"}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#f7b500' };
+  }
+}
+</script>
+</body>
+</html>

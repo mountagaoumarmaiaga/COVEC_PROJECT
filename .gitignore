@@ -1,0 +1,22 @@
+# Un seul dépôt pour les deux moitiés de l'application.
+#
+# Laravel Cloud compile le front et le back au même endroit : son étape de
+# construction lance « composer install » dans backend/ puis « npm run build »
+# dans web/. Deux dépôts séparés lui cacheraient les sources du front.
+#
+# Chaque sous-projet garde son propre .gitignore (backend/.gitignore,
+# web/.gitignore) ; ce fichier ne couvre que la racine.
+
+# Réglages locaux de l'éditeur et de l'assistant.
+.claude/settings.local.json
+
+# Le canevas de maquettes est un fichier reconstruit : 2,2 Mo dont l'essentiel
+# est le code de l'éditeur, pas le dessin. Les sources sont les .dc.html, qui
+# tiennent en quelques kilo-octets et sont versionnées, elles.
+/design/*.html
+!/design/*.dc.html
+
+# Systèmes de fichiers.
+.DS_Store
+Thumbs.db
+desktop.ini

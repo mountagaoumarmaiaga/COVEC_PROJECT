@@ -1,0 +1,178 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@300;400;500;600&family=Alumni+Sans:wght@100;200;300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: oklch(97% 0.012 95);
+      --raised: oklch(99% 0.008 95);
+      --ink: oklch(25% 0.018 95);
+      --muted: oklch(45% 0.015 95);
+      --faint: oklch(55% 0.012 95);
+      --rule: oklch(25% 0.02 95 / 0.16);
+      --edge: oklch(25% 0.02 95 / 0.42);
+      --kinpaku: oklch(84% 0.19 80.46);
+      --kinpaku-deep: oklch(61% 0.085 78);
+      --patina-deep: oklch(49% 0.08 188);
+      --display: "Alumni Sans", "Albert Sans", Arial, sans-serif;
+      --body: "Albert Sans", "Avenir Next", "Helvetica Neue", Arial, system-ui, sans-serif;
+      --mono: "SFMono-Regular", "Roboto Mono", "JetBrains Mono", Consolas, monospace;
+    }
+    body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--body); }
+    a { color: var(--patina-deep); text-decoration: none; }
+    a:hover { color: oklch(70% 0.12 188); }
+    table { border-collapse: collapse; width: 100%; }
+    .num { font-variant-numeric: tabular-nums; }
+    .champ {
+      display: block; width: 100%; box-sizing: border-box;
+      padding: 7px 0 9px; border: 0; border-bottom: 1px solid var(--edge);
+      background: transparent; color: var(--ink);
+      font-family: var(--body); font-size: 16px;
+    }
+    .etiq {
+      display: block; margin-bottom: 2px;
+      font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--muted);
+    }
+  </style>
+</helmet>
+
+<div style="width: 1280px; background: var(--paper); font-family: var(--body); color: var(--ink); padding: 0 0 64px">
+
+  <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 32px; padding: 28px 64px 18px; border-bottom: 1px solid var(--rule)">
+    <div style="display: flex; align-items: baseline; gap: 14px">
+      <span style="font-family: var(--display); font-size: 22px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase">COVEC</span>
+      <span style="width: 1px; height: 14px; background: var(--edge)"></span>
+      <span style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted)">Suivi du carburant</span>
+    </div>
+    <div style="display: flex; align-items: baseline; gap: 26px; font-size: 13px">
+      <a href="#">Stock</a>
+      <a href="#">Sorties</a>
+      <span style="color: var(--ink); border-bottom: 1px solid var(--kinpaku); padding-bottom: 3px">Entrées</span>
+      <a href="#">Référentiel</a>
+    </div>
+  </div>
+
+  <div style="padding: 0 64px">
+
+    <div style="padding: 44px 0 34px">
+      <p style="margin: 0 0 14px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--kinpaku-deep)">Écran 1 &middot; remplissage de la cuve</p>
+      <h1 style="margin: 0; font-family: var(--display); font-size: 72px; font-weight: 200; line-height: 1.02; letter-spacing: -0.01em">Entrées</h1>
+    </div>
+
+    <div style="background: var(--raised); border: 1px solid var(--rule); box-shadow: 0 2px 6px oklch(25% 0.02 95 / 0.1); padding: 32px 36px 34px">
+      <h2 style="margin: 0 0 28px; font-family: var(--display); font-size: 30px; font-weight: 300">Nouvelle livraison</h2>
+
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px 36px">
+        <label>
+          <span class="etiq">Date</span>
+          <input class="champ" type="text" value="04/08/2026" readonly>
+        </label>
+        <label>
+          <span class="etiq">Fournisseur</span>
+          <input class="champ" type="text" value="Total Énergies Mali" readonly>
+        </label>
+        <label>
+          <span class="etiq">N&deg; de bon de livraison</span>
+          <input class="champ" type="text" value="BL-2026-0855" readonly>
+        </label>
+        <label>
+          <span class="etiq">Quantité livrée (L)</span>
+          <input class="champ num" type="text" value="5 000,00" readonly>
+        </label>
+        <label>
+          <span class="etiq">Prix du litre (FCFA)</span>
+          <input class="champ num" type="text" value="812" readonly>
+        </label>
+
+        <!-- Le montant se calcule pendant la frappe : c'est le chiffre que le
+             magasinier rapproche du bon qu'il a sous les yeux. -->
+        <div style="display: flex; flex-direction: column; justify-content: flex-end">
+          <span class="etiq">Montant</span>
+          <p class="num" style="margin: 0; padding: 2px 0 7px; font-family: var(--display); font-size: 40px; font-weight: 200; line-height: 1; color: var(--kinpaku-deep)">4 060 000 <span style="font-size: 18px">FCFA</span></p>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; justify-content: flex-end; gap: 22px; margin-top: 34px">
+        <a href="#" style="font-size: 14px; color: var(--muted)">Annuler</a>
+        <button style="border: 0; background: var(--ink); color: oklch(97% 0.012 95); font-family: var(--body); font-size: 14px; font-weight: 500; padding: 0 24px; height: 44px; border-radius: 3px; cursor: pointer">Enregistrer la livraison</button>
+      </div>
+    </div>
+
+    <div style="padding: 52px 0 0">
+      <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 24px; margin-bottom: 22px">
+        <h2 style="margin: 0; font-family: var(--display); font-size: 34px; font-weight: 300">Livraisons reçues</h2>
+        <div style="display: flex; align-items: baseline; gap: 20px; font-size: 13px">
+          <a href="#">Tous les mois</a>
+          <a href="#">2026</a>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th style="text-align: left; padding: 0 0 10px; border-bottom: 1px solid var(--edge); font-family: var(--mono); font-size: 11px; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted)">Date</th>
+            <th style="text-align: left; padding: 0 0 10px; border-bottom: 1px solid var(--edge); font-family: var(--mono); font-size: 11px; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted)">Fournisseur</th>
+            <th style="text-align: left; padding: 0 0 10px; border-bottom: 1px solid var(--edge); font-family: var(--mono); font-size: 11px; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted)">N&deg; de bon</th>
+            <th style="text-align: right; padding: 0 0 10px; border-bottom: 1px solid var(--edge); font-family: var(--mono); font-size: 11px; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted)">Quantité</th>
+            <th style="text-align: right; padding: 0 0 10px; border-bottom: 1px solid var(--edge); font-family: var(--mono); font-size: 11px; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted)">Prix du litre</th>
+            <th style="text-align: right; padding: 0 0 10px; border-bottom: 1px solid var(--edge); font-family: var(--mono); font-size: 11px; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted)">Montant</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="num" style="padding: 16px 0; border-bottom: 1px solid var(--rule); font-size: 14px; color: var(--muted)">04/08/2026</td>
+            <td style="padding: 16px 0; border-bottom: 1px solid var(--rule); font-size: 14px">Total Énergies Mali</td>
+            <td style="padding: 16px 0; border-bottom: 1px solid var(--rule); font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em; color: var(--muted)">BL-2026-0855</td>
+            <td class="num" style="padding: 16px 0; border-bottom: 1px solid var(--rule); text-align: right; font-size: 14px">5 000,00 L</td>
+            <td class="num" style="padding: 16px 0; border-bottom: 1px solid var(--rule); text-align: right; font-size: 14px; color: var(--muted)">812 FCFA</td>
+            <td class="num" style="padding: 16px 0; border-bottom: 1px solid var(--rule); text-align: right; font-family: var(--display); font-size: 22px; font-weight: 400">4 060 000 <span style="font-size: 12px; font-family: var(--body); color: var(--muted)">F</span></td>
+          </tr>
+          <tr>
+            <td class="num" style="padding: 16px 0; border-bottom: 1px solid var(--rule); font-size: 14px; color: var(--muted)">19/07/2026</td>
+            <td style="padding: 16px 0; border-bottom: 1px solid var(--rule); font-size: 14px">Ola Énergie</td>
+            <td style="padding: 16px 0; border-bottom: 1px solid var(--rule); font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em; color: var(--muted)">BL-2026-0801</td>
+            <td class="num" style="padding: 16px 0; border-bottom: 1px solid var(--rule); text-align: right; font-size: 14px">5 000,00 L</td>
+            <td class="num" style="padding: 16px 0; border-bottom: 1px solid var(--rule); text-align: right; font-size: 14px; color: var(--muted)">798 FCFA</td>
+            <td class="num" style="padding: 16px 0; border-bottom: 1px solid var(--rule); text-align: right; font-family: var(--display); font-size: 22px; font-weight: 400">3 990 000 <span style="font-size: 12px; font-family: var(--body); color: var(--muted)">F</span></td>
+          </tr>
+          <tr>
+            <td class="num" style="padding: 16px 0; border-bottom: 1px solid var(--edge); font-size: 14px; color: var(--muted)">01/07/2026</td>
+            <td style="padding: 16px 0; border-bottom: 1px solid var(--edge); font-size: 14px">Total Énergies Mali</td>
+            <td style="padding: 16px 0; border-bottom: 1px solid var(--edge); font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em; color: var(--muted)">BL-2026-0714</td>
+            <td class="num" style="padding: 16px 0; border-bottom: 1px solid var(--edge); text-align: right; font-size: 14px">12 000,00 L</td>
+            <td class="num" style="padding: 16px 0; border-bottom: 1px solid var(--edge); text-align: right; font-size: 14px; color: var(--muted)">785 FCFA</td>
+            <td class="num" style="padding: 16px 0; border-bottom: 1px solid var(--edge); text-align: right; font-family: var(--display); font-size: 22px; font-weight: 400">9 420 000 <span style="font-size: 12px; font-family: var(--body); color: var(--muted)">F</span></td>
+          </tr>
+          <tr>
+            <td style="padding: 18px 0; font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted)">Total</td>
+            <td style="padding: 18px 0"></td>
+            <td style="padding: 18px 0"></td>
+            <td class="num" style="padding: 18px 0; text-align: right; font-family: var(--display); font-size: 26px; font-weight: 300">22 000,00 <span style="font-size: 13px; font-family: var(--body); color: var(--muted)">L</span></td>
+            <td class="num" style="padding: 18px 0; text-align: right; font-size: 13px; color: var(--faint)">794 moyen</td>
+            <td class="num" style="padding: 18px 0; text-align: right; font-family: var(--display); font-size: 26px; font-weight: 300">17 470 000 <span style="font-size: 13px; font-family: var(--body); color: var(--muted)">F</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

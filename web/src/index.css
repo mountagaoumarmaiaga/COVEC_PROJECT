@@ -1,0 +1,153 @@
+@import 'tailwindcss';
+
+/*
+  Direction visuelle reprise d'impeccable.style et appliquée au suivi du
+  carburant. Les valeurs sont celles du système source, relevées dans ses
+  feuilles de style, pas approchées à l'œil.
+
+  Trois principes gouvernent l'ensemble :
+    — les chiffres sont l'objet principal, en graisse très fine et grande taille ;
+    — un filet remplace un cadre partout où c'est possible ;
+    — le vermillon est réservé au §5 du cahier des charges. Saisie refusée et
+      plein signalé, rien d'autre : il perdrait son pouvoir d'arrêt à servir
+      de décoration.
+*/
+@theme {
+  /* Fonds, du plus profond au plus levé. */
+  --color-papier: oklch(97% 0.012 95);
+  --color-papier-profond: oklch(94% 0.014 95);
+  --color-leve: oklch(99% 0.008 95);
+
+  /* Encres. */
+  --color-encre: oklch(25% 0.018 95);
+  --color-attenue: oklch(45% 0.015 95);
+  --color-pale: oklch(55% 0.012 95);
+
+  /* Filets. Le filet sépare, l'arête délimite. */
+  --color-filet: oklch(25% 0.02 95 / 0.16);
+  --color-arete: oklch(25% 0.02 95 / 0.42);
+
+  /* Kinpaku — la feuille d'or. Couleur du carburant et de l'état actif. */
+  --color-kinpaku: oklch(84% 0.19 80.46);
+  --color-kinpaku-profond: oklch(61% 0.085 78);
+  --color-kinpaku-pale: oklch(86% 0.07 84);
+
+  /* Patine — les liens et les actions secondaires. */
+  --color-patine: oklch(70% 0.12 188);
+  --color-patine-profonde: oklch(49% 0.08 188);
+
+  /* Vermillon — le §5, et rien d'autre. */
+  --color-vermillon: oklch(52% 0.16 35);
+  --color-vermillon-voile: oklch(52% 0.16 35 / 0.05);
+  --color-vermillon-trait: oklch(52% 0.16 35 / 0.4);
+
+  --font-display: 'Alumni Sans', 'Albert Sans', Arial, sans-serif;
+  --font-sans: 'Albert Sans', 'Avenir Next', 'Helvetica Neue', Arial, system-ui, sans-serif;
+  --font-mono: 'SFMono-Regular', 'Roboto Mono', 'JetBrains Mono', Consolas, monospace;
+
+  /* Rayons serrés : 3 px partout, 8 px pour les rares surfaces levées. */
+  --radius-net: 3px;
+  --radius-leve: 8px;
+
+  --shadow-leve: 0 2px 6px oklch(25% 0.02 95 / 0.1);
+  --shadow-flottant: 0 10px 28px oklch(25% 0.02 95 / 0.16);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-papier);
+  color: var(--color-encre);
+  font-family: var(--font-sans);
+}
+
+/*
+  Ces classes vivent dans la couche « components » et non hors couche : une
+  règle hors couche bat tous les utilitaires Tailwind, quelle que soit leur
+  spécificité. `.champ` écraserait alors silencieusement un `flex` ou un
+  `w-auto` passé au cas par cas.
+*/
+@layer components {
+  /* Les chiffres d'un registre se comparent en colonne : ils doivent
+     s'aligner verticalement, quel que soit le chiffre. */
+  .chiffres {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Surtitre : capitales interlettrées à 11 px, la taille du système source
+     (.6875rem). En dessous, les capitales espacées deviennent illisibles. */
+  .surtitre {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  /*
+    Champ de saisie : un fond très légèrement creusé, fermé par un filet.
+
+    La première version n'avait que le filet, sur fond transparent. Dans un
+    formulaire dense l'œil comprend le motif dès le deuxième champ ; sur
+    l'écran de connexion, deux champs isolés dans du blanc ne se lisaient plus
+    comme des cases à remplir. Le fond rend la zone de frappe visible sans
+    ramener la boîte que la direction visuelle écarte.
+
+    Le focus épaissit le filet plutôt que d'ajouter un halo.
+  */
+  .champ {
+    display: block;
+    width: 100%;
+    padding: 8px 10px 9px;
+    border: 0;
+    border-bottom: 1px solid var(--color-arete);
+    border-radius: 3px 3px 0 0;
+    background: oklch(25% 0.02 95 / 0.065);
+    color: var(--color-encre);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    text-align: left;
+    transition:
+      border-color 0.12s cubic-bezier(0.2, 0.8, 0.2, 1),
+      background-color 0.12s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .champ::placeholder {
+    color: var(--color-pale);
+  }
+
+  .champ:hover:not(:disabled) {
+    background: oklch(25% 0.02 95 / 0.095);
+  }
+
+  .champ:focus,
+  .champ:focus-visible {
+    outline: none;
+    border-bottom-color: var(--color-encre);
+    border-bottom-width: 2px;
+    padding-bottom: 8px;
+    background: oklch(25% 0.02 95 / 0.095);
+  }
+
+  .champ:disabled {
+    color: var(--color-pale);
+    border-bottom-style: dotted;
+  }
+
+  .champ[aria-invalid='true'] {
+    border-bottom-color: var(--color-vermillon);
+    color: var(--color-vermillon);
+  }
+
+  /* Le déclencheur d'une liste : même filet qu'un champ de saisie, mais il
+     doit loger le libellé et le chevron sur une ligne. */
+  .champ-liste {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    cursor: pointer;
+  }
+}

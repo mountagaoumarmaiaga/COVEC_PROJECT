@@ -1,0 +1,39 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "title": "Stock et consommation", "x": 0, "y": 0, "w": 1280, "h": 1608 },
+    { "file": "Sorties.dc.html", "title": "Sorties — saisie et contrôles", "x": 1400, "y": 0, "w": 1280, "h": 1320 },
+    { "file": "Entrees.dc.html", "title": "Entrées — livraisons", "x": 0, "y": 1820, "w": 1280, "h": 1056 },
+    { "file": "Systeme.dc.html", "title": "Système visuel", "x": 1400, "y": 1820, "w": 1280, "h": 2124 }
+  ],
+  "annotations": [
+    {
+      "id": "direction",
+      "x": -420,
+      "y": 0,
+      "w": 360,
+      "text": "Direction : impeccable.style appliqué à COVEC.\n\nAlumni Sans en graisse 100–300 pour les chiffres et les titres, Albert Sans pour l'interface. Fond papier chaud plutôt que gris bleuté, filets à la place des cadres, rayons de 3 px au lieu de 12.\n\nLes chiffres deviennent l'objet principal : le volume restant se lit à distance."
+    },
+    {
+      "id": "vermillon",
+      "x": 2740,
+      "y": 0,
+      "w": 380,
+      "text": "Le vermillon est réservé au §5 du cahier des charges — saisie refusée et plein signalé. Aucune autre couleur d'alerte, aucun usage décoratif : c'est ce qui lui garde son pouvoir d'arrêt.\n\nLes deux lignes signalées ici sont les vraies anomalies du jeu de données : +53,86 % et +57,85 %."
+    },
+    {
+      "id": "a-trancher",
+      "x": 2740,
+      "y": 460,
+      "w": 380,
+      "text": "Le champ « Index pompe » reste facultatif tant que la question de la pompe à totalisateur n'est pas tranchée.\n\nS'il devient obligatoire, il remonte à côté de l'index compteur et gagne son propre contrôle de rapprochement."
+    },
+    {
+      "id": "implementation",
+      "x": 2740,
+      "y": 1820,
+      "w": 360,
+      "text": "Direction appliquée au code : ces valeurs sont en place dans le bloc @theme de web/src/index.css, et les six écrans React les utilisent.\n\nCette planche reste la référence — c'est ici qu'on ajuste une valeur avant de la reporter dans le CSS."
+    }
+  ],
+  "launch": { "view": "canvas" }
+}
