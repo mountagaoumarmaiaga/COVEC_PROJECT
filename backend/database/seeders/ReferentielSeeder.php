@@ -9,6 +9,7 @@ use App\Models\Carburant;
 use App\Models\Cuve;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 /**
  * Amorçage d'une station qui démarre pour de bon.
@@ -56,12 +57,25 @@ class ReferentielSeeder extends Seeder
      * Le compte qui permet d'entrer la première fois.
      *
      * Sans lui, l'application serait fermée à clé sans que personne ait la
-     * clé. Le mot de passe est volontairement banal et doit être changé à la
-     * première connexion.
+     * clé.
+     *
+     * Aucun mot de passe n'est écrit dans ce fichier. Un mot de passe par
+     * défaut dans le code source vaut mot de passe public : il est lisible
+     * par quiconque accède au dépôt, et il reste valable sur l'installation
+     * déployée tant que personne ne le change — ce que personne ne fait.
+     * À défaut de COVEC_ADMIN_PASSWORD, il est donc tiré au hasard et affiché
+     * une seule fois, ici même.
      */
     private function premierGestionnaire(): void
     {
-        $motDePasse = env('COVEC_ADMIN_PASSWORD', 'covec2026');
+        $motDePasse = trim((string) env('COVEC_ADMIN_PASSWORD', ''));
+        $tireAuHasard = $motDePasse === '';
+
+        if ($tireAuHasard) {
+            // Sans symboles : il se tape sur le clavier d'un poste de station,
+            // parfois sous la pluie, et doit pouvoir être dicté au téléphone.
+            $motDePasse = Str::password(14, symbols: false);
+        }
 
         $compte = User::query()->firstOrCreate(
             ['matricule' => 'ADMIN'],
@@ -73,11 +87,20 @@ class ReferentielSeeder extends Seeder
             ],
         );
 
-        if ($compte->wasRecentlyCreated) {
+        if (! $compte->wasRecentlyCreated) {
+            return;
+        }
+
+        if ($tireAuHasard) {
             $this->command?->warn(sprintf(
-                'Compte gestionnaire créé — matricule ADMIN, mot de passe « %s ». À CHANGER à la première connexion.',
+                'Compte gestionnaire créé — matricule ADMIN, mot de passe « %s ».',
                 $motDePasse,
             ));
+            $this->command?->warn('Notez-le maintenant : il n’est affiché qu’une fois et n’est stocké nulle part en clair.');
+
+            return;
         }
+
+        $this->command?->warn('Compte gestionnaire créé — matricule ADMIN, mot de passe repris de COVEC_ADMIN_PASSWORD.');
     }
 }

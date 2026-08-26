@@ -17,6 +17,7 @@ use App\Services\ConsommationService;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use RuntimeException;
 
 /**
  * Jeu de démonstration : deux mois d'exploitation d'une station COVEC.
@@ -31,6 +32,15 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        // Ce jeu crée trois comptes dont le mot de passe est écrit dans ce
+        // fichier : il n'a rien à faire sur une installation réelle, et une
+        // commande lancée dans le mauvais terminal suffirait à l'y poser.
+        if (app()->environment('production')) {
+            throw new RuntimeException(
+                'Jeu de démonstration refusé en production. Utilisez ReferentielSeeder.',
+            );
+        }
+
         // Tirage figé : la démonstration doit être identique à chaque
         // réinstallation, sinon les captures d'écran ne correspondent plus.
         mt_srand(20260825);
