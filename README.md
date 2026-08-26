@@ -33,6 +33,17 @@ problèmes.
 un poste éloigné de Francfort sont de la distance, pas du code : un serveur
 voisin de Neon les ramène sous les 100 ms.
 
+### Un seul dépôt
+
+Le front et l'API vivent dans le même dépôt, et c'est la conséquence directe du
+choix ci-dessus : l'étape de construction lance `composer install` *et*
+`npm run build`. Deux dépôts séparés cacheraient à Laravel Cloud les sources de
+l'interface.
+
+Un point à ne pas manquer au premier déploiement : **l'application Laravel est
+dans `backend/`, pas à la racine.** Il faut le déclarer dans les réglages du
+projet, sinon Laravel Cloud cherche un `composer.json` à la racine et échoue.
+
 Étapes de construction, dans cet ordre :
 
 ```bash
