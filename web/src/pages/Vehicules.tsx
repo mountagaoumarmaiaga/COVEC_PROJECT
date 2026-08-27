@@ -355,9 +355,9 @@ export function Vehicules() {
                       )}
                     </Cellule>
                     <Cellule derniere={derniere} aligne="droite">
-                      <div className="flex justify-end gap-1">
+                      <div className="flex justify-end gap-2">
                         <Bouton
-                          variante="discret"
+                          variante="icone"
                           type="button"
                           aria-label={`Modifier ${vehicule.code}`}
                           onClick={() => editer(vehicule)}
@@ -365,7 +365,7 @@ export function Vehicules() {
                           <Pencil className="size-4" aria-hidden />
                         </Bouton>
                         <Bouton
-                          variante="discret"
+                          variante="icone-danger"
                           type="button"
                           aria-label={`Supprimer ${vehicule.code}`}
                           onClick={() => {

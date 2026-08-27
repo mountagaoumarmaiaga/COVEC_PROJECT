@@ -62,19 +62,19 @@ export function Layout() {
   return (
     <div className="min-h-screen bg-papier">
       <header className="border-b border-filet">
-        <div className="mx-auto flex max-w-[1280px] flex-wrap items-baseline justify-between gap-x-8 gap-y-3 px-6 pt-7 pb-4 lg:px-16">
+        <div className="mx-auto flex max-w-[1280px] flex-wrap items-baseline justify-between gap-x-8 gap-y-2.5 px-5 pt-5 pb-3 sm:gap-y-3 sm:px-6 sm:pt-7 sm:pb-4 lg:px-16">
           <div className="flex items-baseline gap-3.5">
             <span className="font-display text-[22px] font-medium tracking-[0.15em] uppercase">
               COVEC
             </span>
-            <span className="h-3.5 w-px self-center bg-arete" aria-hidden />
-            <span className="text-[11px] tracking-[0.18em] text-attenue uppercase">
+            <span className="hidden h-3.5 w-px self-center bg-arete sm:inline-block" aria-hidden />
+            <span className="hidden text-[11px] tracking-[0.18em] text-attenue uppercase sm:inline">
               Suivi du carburant
             </span>
           </div>
 
-          <div className="flex flex-wrap items-baseline gap-x-7 gap-y-3">
-            <nav className="flex flex-wrap items-baseline gap-x-7 gap-y-2">
+          <div className="flex flex-wrap items-baseline gap-x-5 gap-y-2.5 sm:gap-x-7 sm:gap-y-3">
+            <nav className="flex flex-wrap items-baseline gap-x-5 gap-y-2 sm:gap-x-7">
               {ECRANS.map((ecran) => (
                 <NavLink key={ecran.to} to={ecran.to} end={ecran.exact} className={lienClasse}>
                   {ecran.libelle}
@@ -91,10 +91,10 @@ export function Layout() {
             </nav>
 
             {utilisateur && (
-              <div className="flex items-baseline gap-3.5 border-l border-filet pl-7">
+              <div className="flex items-baseline gap-3 border-filet sm:gap-3.5 sm:border-l sm:pl-7">
                 <NavLink to="/mon-compte" className={lienClasse}>
                   <span className="font-medium">{utilisateur.nom}</span>
-                  <span className="ml-2 text-[11px] tracking-[0.14em] text-pale uppercase">
+                  <span className="ml-2 hidden text-[11px] tracking-[0.14em] text-pale uppercase sm:inline">
                     {utilisateur.role_libelle}
                   </span>
                 </NavLink>
@@ -102,7 +102,11 @@ export function Layout() {
                   type="button"
                   onClick={seDeconnecter}
                   aria-label="Se déconnecter"
-                  className={`${ZONE_TACTILE} cursor-pointer text-attenue transition-colors hover:text-encre`}
+                  // Carré cerné plutôt qu'icône nue : une icône de seize
+                  // pixels posée sur le papier ne se lit pas comme un bouton,
+                  // et sa zone tactile restait aussi étroite qu'elle.
+                  className="relative inline-flex size-9 shrink-0 cursor-pointer items-center justify-center self-center rounded-net border border-filet bg-papier-profond text-attenue transition-colors hover:border-arete hover:text-encre focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-arete after:absolute after:-inset-1 after:content-['']"
+
                 >
                   <LogOut className="size-4" aria-hidden />
                 </button>
@@ -113,7 +117,7 @@ export function Layout() {
 
         {dansReferentiel && (
           <div className="border-t border-filet bg-papier-profond">
-            <nav className="mx-auto flex max-w-[1280px] flex-wrap items-baseline gap-x-7 gap-y-2 px-6 py-2.5 lg:px-16">
+            <nav className="mx-auto flex max-w-[1280px] flex-wrap items-baseline gap-x-5 gap-y-2 px-5 py-2 sm:gap-x-7 sm:px-6 sm:py-2.5 lg:px-16">
               {REFERENTIEL.map((ecran) => (
                 <NavLink key={ecran.to} to={ecran.to} className={lienClasse}>
                   {ecran.libelle}
@@ -124,7 +128,7 @@ export function Layout() {
         )}
       </header>
 
-      <main className="mx-auto max-w-[1280px] px-6 py-11 lg:px-16">
+      <main className="mx-auto max-w-[1280px] px-5 py-8 sm:px-6 sm:py-11 lg:px-16">
         <Outlet />
       </main>
     </div>

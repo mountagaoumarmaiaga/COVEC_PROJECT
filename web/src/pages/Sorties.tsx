@@ -705,13 +705,13 @@ export function Sorties() {
                       )}
                     </Cellule>
                     <Cellule derniere={derniere} aligne="droite">
-                      <div className="flex justify-end gap-1">
+                      <div className="flex justify-end gap-2">
                         {/* Un pompiste enregistre ses pleins mais ne les
                             corrige pas : l'API le refuse, l'interface ne le
                             propose donc pas. */}
                         {peutGerer && (
                         <Bouton
-                          variante="discret"
+                          variante="icone"
                           type="button"
                           aria-label={`Modifier le plein du ${formaterDate(sortie.date_sortie)}`}
                           onClick={() => editer(sortie)}
@@ -721,7 +721,7 @@ export function Sorties() {
                         )}
                         {peutGerer && (
                         <Bouton
-                          variante="discret"
+                          variante="icone-danger"
                           type="button"
                           aria-label={`Supprimer le plein du ${formaterDate(sortie.date_sortie)}`}
                           onClick={() => {

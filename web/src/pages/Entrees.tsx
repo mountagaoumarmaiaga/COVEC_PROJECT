@@ -477,10 +477,10 @@ export function Entrees() {
                     </span>
                   </Cellule>
                   <Cellule aligne="droite">
-                    <div className="flex justify-end gap-1">
+                    <div className="flex justify-end gap-2">
                       {peutGerer && (<>
                       <Bouton
-                        variante="discret"
+                        variante="icone"
                         type="button"
                         aria-label={`Modifier la livraison du ${formaterDate(entree.date_entree)}`}
                         onClick={() => editer(entree)}
@@ -488,7 +488,7 @@ export function Entrees() {
                         <Pencil className="size-4" aria-hidden />
                       </Bouton>
                       <Bouton
-                        variante="discret"
+                        variante="icone-danger"
                         type="button"
                         aria-label={`Supprimer la livraison du ${formaterDate(entree.date_entree)}`}
                         onClick={() => {

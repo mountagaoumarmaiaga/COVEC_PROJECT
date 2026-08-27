@@ -246,9 +246,9 @@ export function Chauffeurs() {
                       {chauffeur.actif ? <Badge ton="or">Actif</Badge> : <Badge>Inactif</Badge>}
                     </Cellule>
                     <Cellule derniere={derniere} aligne="droite">
-                      <div className="flex justify-end gap-1">
+                      <div className="flex justify-end gap-2">
                         <Bouton
-                          variante="discret"
+                          variante="icone"
                           type="button"
                           aria-label={`Modifier ${chauffeur.nom}`}
                           onClick={() => editer(chauffeur)}
@@ -256,7 +256,7 @@ export function Chauffeurs() {
                           <Pencil className="size-4" aria-hidden />
                         </Bouton>
                         <Bouton
-                          variante="discret"
+                          variante="icone-danger"
                           type="button"
                           aria-label={`Supprimer ${chauffeur.nom}`}
                           onClick={() => {

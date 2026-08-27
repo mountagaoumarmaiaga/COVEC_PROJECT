@@ -348,9 +348,9 @@ export function Utilisateurs() {
                       {compte.actif ? <Badge ton="or">Actif</Badge> : <Badge>Désactivé</Badge>}
                     </Cellule>
                     <Cellule derniere={derniere} aligne="droite">
-                      <div className="flex justify-end gap-1">
+                      <div className="flex justify-end gap-2">
                         <Bouton
-                          variante="discret"
+                          variante="icone"
                           type="button"
                           aria-label={`Modifier ${compte.nom}`}
                           onClick={() => editer(compte)}
@@ -358,7 +358,7 @@ export function Utilisateurs() {
                           <Pencil className="size-4" aria-hidden />
                         </Bouton>
                         <Bouton
-                          variante="discret"
+                          variante="icone-danger"
                           type="button"
                           disabled={cestMoi}
                           aria-label={`Supprimer ${compte.nom}`}

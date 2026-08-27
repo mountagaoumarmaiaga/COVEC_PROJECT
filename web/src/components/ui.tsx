@@ -111,14 +111,51 @@ export function Carte({
   )
 }
 
-type VarianteBouton = 'primaire' | 'secondaire' | 'discret' | 'danger'
+type VarianteBouton =
+  | 'primaire'
+  | 'secondaire'
+  | 'discret'
+  | 'danger'
+  | 'icone'
+  | 'icone-danger'
+
+/*
+  Un bouton doit se voir avant d'être lu.
+
+  La première version poussait la retenue trop loin : « discret » n'avait ni
+  fond ni contour, si bien que les icônes de modification et de suppression
+  d'une ligne ressemblaient à de la décoration. Sur un poste de station, où
+  l'on cherche vite, une commande invisible est une commande perdue.
+
+  Chaque variante porte donc une bordure ou un aplat. La retenue se joue sur
+  l'intensité — filet contre arête, voile contre aplat — pas sur l'absence.
+*/
+
+// Zone tactile portée au-delà de la cible visible : un doigt vise moins bien
+// qu'un curseur, et agrandir le bouton lui-même alourdirait chaque ligne.
+const DEBORD = "after:absolute after:-inset-1 after:content-['']"
 
 const VARIANTES: Record<VarianteBouton, string> = {
+  // Action principale de l'écran : pleine et sombre, repérable au premier
+  // coup d'oeil parmi des filets clairs.
   primaire: 'h-11 px-6 bg-encre text-papier hover:bg-black focus-visible:outline-encre',
+
+  // Action secondaire : contour franc — l'arête, pas le filet — pour se
+  // détacher du texte voisin.
   secondaire:
-    'h-9 px-5 border border-arete text-encre hover:bg-papier-profond focus-visible:outline-arete',
-  discret: 'h-9 px-3 text-attenue hover:text-encre focus-visible:outline-arete',
-  danger: 'h-9 px-5 border border-vermillon-trait text-vermillon hover:bg-vermillon-voile focus-visible:outline-vermillon',
+    'h-11 px-5 border border-arete bg-leve text-encre hover:border-encre hover:bg-papier-profond focus-visible:outline-arete',
+
+  // Retenue, mais lisible : fond légèrement appuyé et contour au filet.
+  discret: `h-10 px-4 border border-filet bg-papier-profond text-attenue hover:border-arete hover:text-encre focus-visible:outline-arete ${DEBORD}`,
+
+  // Le vermillon est réservé à ce qui ne se rattrape pas.
+  danger: `h-10 px-4 border border-vermillon-trait bg-vermillon-voile text-vermillon hover:border-vermillon focus-visible:outline-vermillon ${DEBORD}`,
+
+  // Icône seule, dans une ligne de tableau : carré cerné, jamais un glyphe nu.
+  icone: `size-10 border border-filet bg-papier-profond text-attenue hover:border-arete hover:text-encre focus-visible:outline-arete ${DEBORD}`,
+
+  // Même carré, teinté : supprimer ne doit pas ressembler à modifier.
+  'icone-danger': `size-10 border border-vermillon-trait bg-vermillon-voile text-vermillon hover:border-vermillon focus-visible:outline-vermillon ${DEBORD}`,
 }
 
 export function Bouton({
@@ -129,7 +166,7 @@ export function Bouton({
   return (
     <button
       {...props}
-      className={`inline-flex cursor-pointer items-center justify-center gap-2 rounded-net text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-45 ${VARIANTES[variante]} ${className}`}
+      className={`relative inline-flex cursor-pointer items-center justify-center gap-2 rounded-net text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-45 ${VARIANTES[variante]} ${className}`}
     />
   )
 }
