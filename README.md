@@ -61,10 +61,14 @@ fait passer l'écran de stock de 2,8 secondes à moins de 100 ms.
 **Commandes de construction** :
 
 ```bash
-composer install --no-dev --optimize-autoloader && npm --prefix ../web ci && npm --prefix ../web run build && php artisan optimize
+composer install --no-dev --optimize-autoloader && (cd ../web && npm ci && npm run build) && php artisan optimize
 ```
 
-Vite écrit dans `backend/public/app`, donc à l'intérieur du dossier déployé.
+Tout s'exécute dans `backend`, le dossier sélectionné : c'est le répertoire de
+travail de la construction comme du déploiement. Les parenthèses contiennent le
+détour par `web/`, si bien que `php artisan optimize` retrouve `backend`
+derrière. Vite écrit dans `backend/public/app`, donc à l'intérieur du dossier
+déployé — c'est ce qui permet à Laravel de servir l'interface.
 
 **Commandes de déploiement** :
 
