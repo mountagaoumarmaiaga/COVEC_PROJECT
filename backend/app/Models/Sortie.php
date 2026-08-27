@@ -82,6 +82,34 @@ class Sortie extends Model
         return $query->whereYear('date_sortie', $annee)->whereMonth('date_sortie', $mois);
     }
 
+    /**
+     * Recherche par véhicule ou par chauffeur.
+     *
+     * Un plein n'a pas de texte propre : ce qu'on cherche est toujours le code
+     * du véhicule, sa désignation, ou le nom du chauffeur qui l'a servi. La
+     * recherche traverse donc les deux relations.
+     */
+    public function scopeRecherche(Builder $query, ?string $terme): Builder
+    {
+        $terme = trim((string) $terme);
+
+        if ($terme === '') {
+            return $query;
+        }
+
+        // « lower() » plutôt que « like » seul : PostgreSQL distingue la casse.
+        $motif = '%'.mb_strtolower($terme).'%';
+
+        return $query->where(function (Builder $q) use ($motif) {
+            $q->whereHas('vehicule', fn (Builder $v) => $v
+                ->whereRaw('lower(code) like ?', [$motif])
+                ->orWhereRaw('lower(designation) like ?', [$motif]))
+                ->orWhereHas('chauffeur', fn (Builder $c) => $c
+                    ->whereRaw('lower(nom) like ?', [$motif])
+                    ->orWhereRaw('lower(matricule) like ?', [$motif]));
+        });
+    }
+
     public function scopeChronologique(Builder $query): Builder
     {
         return $query->orderBy('date_sortie')->orderBy('id');

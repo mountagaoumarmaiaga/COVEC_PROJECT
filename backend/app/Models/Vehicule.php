@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\ModeSuivi;
+use App\Models\Concerns\Recherchable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -23,6 +24,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Vehicule extends Model
 {
+    use Recherchable;
+
     protected $fillable = [
         'code',
         'designation',
@@ -60,6 +63,12 @@ class Vehicule extends Model
     public function sortiesChronologiques(): HasMany
     {
         return $this->sorties()->orderBy('date_sortie')->orderBy('id');
+    }
+
+    /** @return array<int, string> */
+    protected function colonnesRecherchees(): array
+    {
+        return ['code', 'designation'];
     }
 
     public function scopeActifs(Builder $query): Builder

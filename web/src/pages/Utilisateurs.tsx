@@ -1,6 +1,6 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Pencil, Plus, Trash2, X } from 'lucide-react'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 import {
@@ -14,14 +14,17 @@ import {
   EnteteColonne,
   EnteteEcran,
   EtatVide,
+  Pagination,
+  Recherche,
   Guidage,
   Liste,
   Saisie,
   Tableau,
 } from '@/components/ui'
 import { api, erreursParChamp, messagesErreur } from '@/lib/api'
+import { useDiffere } from '@/lib/differe'
 import { useAuth } from '@/lib/auth'
-import type { RoleCode, RoleOption, Utilisateur } from '@/types'
+import type { RoleCode, RoleOption, Utilisateur, Page } from '@/types'
 
 interface Formulaire {
   nom: string
@@ -48,10 +51,38 @@ export function Utilisateurs() {
   const [messageGlobal, setMessageGlobal] = useState<string[]>([])
   const formulaireRef = useRef<HTMLFormElement>(null)
 
-  const { data: comptes, isLoading } = useQuery({
-    queryKey: ['utilisateurs'],
-    queryFn: async () => (await api.get<{ data: Utilisateur[] }>('/utilisateurs')).data.data,
+  const [recherche, setRecherche] = useState('')
+  const [page, setPage] = useState(1)
+  const rechercheDifferee = useDiffere(recherche)
+
+  const { data: resultat, isLoading } = useQuery({
+    queryKey: ['utilisateurs', rechercheDifferee, page],
+    queryFn: async () =>
+      (
+        await api.get<Page<Utilisateur>>('/utilisateurs', {
+          params: { recherche: rechercheDifferee || undefined, page },
+        })
+      ).data,
+    // Garder la page précédente le temps du chargement évite que la liste
+    // disparaisse à chaque frappe pour réapparaître aussitôt.
+    placeholderData: keepPreviousData,
   })
+
+  const comptes = resultat?.data
+  const meta = resultat?.meta
+
+  // Supprimer la dernière ligne d'une page laisserait l'écran sur une page qui
+  // n'existe plus, et donc vide.
+  useEffect(() => {
+    if (meta && page > meta.last_page) {
+      setPage(meta.last_page)
+    }
+  }, [meta, page])
+
+  const chercher = (valeur: string) => {
+    setRecherche(valeur)
+    setPage(1)
+  }
 
   const { data: roles } = useQuery({
     queryKey: ['roles'],
@@ -256,10 +287,23 @@ export function Utilisateurs() {
       </Carte>
 
       <Carte titre="Comptes existants">
+        <Recherche
+          valeur={recherche}
+          onChange={chercher}
+          placeholder="Chercher un nom ou un matricule…"
+          className="mb-5 max-w-sm"
+        />
+
         {isLoading ? (
           <Chargement />
         ) : !comptes || comptes.length === 0 ? (
-          <EtatVide message="Aucun compte enregistré." />
+          <EtatVide
+            message={
+              rechercheDifferee
+                ? `Aucun résultat pour « ${rechercheDifferee} ».`
+                : 'Aucun compte enregistré.'
+            }
+          />
         ) : (
           <Tableau>
             <thead>
@@ -335,6 +379,8 @@ export function Utilisateurs() {
             </tbody>
           </Tableau>
         )}
+
+        {meta && <Pagination meta={meta} onPage={setPage} />}
       </Carte>
     </div>
   )

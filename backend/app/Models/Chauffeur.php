@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Concerns\Recherchable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -18,6 +19,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Chauffeur extends Model
 {
+    use Recherchable;
+
     protected $fillable = ['nom', 'matricule', 'actif'];
 
     protected function casts(): array
@@ -28,6 +31,12 @@ class Chauffeur extends Model
     public function sorties(): HasMany
     {
         return $this->hasMany(Sortie::class);
+    }
+
+    /** @return array<int, string> */
+    protected function colonnesRecherchees(): array
+    {
+        return ['nom', 'matricule'];
     }
 
     public function scopeActifs(Builder $query): Builder

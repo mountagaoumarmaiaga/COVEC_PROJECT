@@ -27,9 +27,10 @@ class EntreeController extends Controller
                 $request->filled('fournisseur'),
                 fn ($q) => $q->where('fournisseur', 'like', '%'.$request->string('fournisseur').'%'),
             )
+            ->recherche($request->string('recherche'))
             ->orderByDesc('date_entree')
             ->orderByDesc('id')
-            ->paginate($request->integer('par_page', 25))
+            ->paginate($this->parPage($request))
             ->withQueryString();
 
         return EntreeResource::collection($entrees);

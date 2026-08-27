@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Concerns\Recherchable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
@@ -21,6 +22,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class Entree extends Model
 {
+    use Recherchable;
+
     protected $fillable = [
         'date_entree',
         'carburant_id',
@@ -52,6 +55,12 @@ class Entree extends Model
         return Attribute::get(
             fn (): float => round($this->quantite_litres * $this->prix_unitaire, 2),
         );
+    }
+
+    /** @return array<int, string> */
+    protected function colonnesRecherchees(): array
+    {
+        return ['fournisseur', 'reference_bon'];
     }
 
     public function scopeDuMois(Builder $query, int $annee, int $mois): Builder

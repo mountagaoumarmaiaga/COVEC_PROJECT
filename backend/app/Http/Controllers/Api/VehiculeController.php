@@ -21,10 +21,14 @@ class VehiculeController extends Controller
         $vehicules = Vehicule::query()
             ->with('carburant')
             ->when($request->boolean('actifs_seulement'), fn ($q) => $q->actifs())
-            ->orderBy('code')
-            ->get();
+            ->recherche($request->string('recherche'))
+            ->orderBy('code');
 
-        return VehiculeResource::collection($vehicules);
+        return VehiculeResource::collection(
+            $request->boolean('tous')
+                ? $vehicules->get()
+                : $vehicules->paginate($this->parPage($request))->withQueryString(),
+        );
     }
 
     public function store(VehiculeRequest $request): JsonResponse
@@ -81,7 +85,7 @@ class VehiculeController extends Controller
             )
             ->orderByDesc('date_sortie')
             ->orderByDesc('id')
-            ->paginate($request->integer('par_page', 50))
+            ->paginate($this->parPage($request, 50))
             ->withQueryString();
 
         return SortieResource::collection($sorties);

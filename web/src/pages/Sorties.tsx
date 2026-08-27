@@ -1,6 +1,6 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Clock, Pencil, Plus, Trash2, X } from 'lucide-react'
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
 
@@ -17,6 +17,8 @@ import {
   EnteteColonne,
   EnteteEcran,
   EtatVide,
+  Pagination,
+  Recherche,
   LienAction,
   Liste,
   ListeFiltre,
@@ -25,6 +27,7 @@ import {
   Tableau,
 } from '@/components/ui'
 import { api, erreursParChamp, messagesErreur } from '@/lib/api'
+import { useDiffere } from '@/lib/differe'
 import { useDroits } from '@/lib/auth'
 import {
   depuisChampHorodatage,
@@ -78,14 +81,14 @@ export function Sorties() {
   const { data: vehicules } = useQuery({
     queryKey: ['vehicules', 'actifs'],
     queryFn: async () =>
-      (await api.get<{ data: Vehicule[] }>('/vehicules', { params: { actifs_seulement: 1 } }))
+      (await api.get<{ data: Vehicule[] }>('/vehicules', { params: { actifs_seulement: 1, tous: 1 } }))
         .data.data,
   })
 
   const { data: chauffeurs } = useQuery({
     queryKey: ['chauffeurs', 'actifs'],
     queryFn: async () =>
-      (await api.get<{ data: Chauffeur[] }>('/chauffeurs', { params: { actifs_seulement: 1 } }))
+      (await api.get<{ data: Chauffeur[] }>('/chauffeurs', { params: { actifs_seulement: 1, tous: 1 } }))
         .data.data,
   })
 
@@ -180,8 +183,12 @@ export function Sorties() {
       : 'Premier plein : relevez le total d’heures au compteur horaire. Il servira de repère aux suivants.'
   }
 
+  const [recherche, setRecherche] = useState('')
+  const [page, setPage] = useState(1)
+  const rechercheDifferee = useDiffere(recherche)
+
   const { data: sorties, isLoading } = useQuery({
-    queryKey: ['sorties', filtreVehicule, filtreAnnee, filtreMois, anomaliesSeulement],
+    queryKey: ['sorties', filtreVehicule, filtreAnnee, filtreMois, anomaliesSeulement, rechercheDifferee, page],
     queryFn: async () =>
       (
         await api.get<Page<Sortie>>('/sorties', {
@@ -190,11 +197,34 @@ export function Sorties() {
             annee: filtreMois ? filtreAnnee : undefined,
             mois: filtreMois || undefined,
             anomalies_seulement: anomaliesSeulement ? 1 : undefined,
-            par_page: 50,
+            recherche: rechercheDifferee || undefined,
+            page,
           },
         })
       ).data,
+    // Garder la page précédente le temps du chargement évite que la liste
+    // disparaisse à chaque frappe pour réapparaître aussitôt.
+    placeholderData: keepPreviousData,
   })
+
+  const meta = sorties?.meta
+
+  // Un changement de filtre remet à la première page : rester en page 4 d'un
+  // mois qui n'en compte qu'une afficherait un écran vide.
+  useEffect(() => {
+    setPage(1)
+  }, [filtreVehicule, filtreAnnee, filtreMois, anomaliesSeulement])
+
+  useEffect(() => {
+    if (meta && page > meta.last_page) {
+      setPage(meta.last_page)
+    }
+  }, [meta, page])
+
+  const chercher = (valeur: string) => {
+    setRecherche(valeur)
+    setPage(1)
+  }
 
   const rafraichir = () => {
     queryClient.invalidateQueries({ queryKey: ['sorties'] })
@@ -552,10 +582,23 @@ export function Sorties() {
           </>
         }
       >
+        <Recherche
+          valeur={recherche}
+          onChange={chercher}
+          placeholder="Chercher un véhicule ou un chauffeur…"
+          className="mb-5 max-w-sm"
+        />
+
         {isLoading ? (
           <Chargement />
         ) : !sorties || sorties.data.length === 0 ? (
-          <EtatVide message="Aucun plein pour ces critères." />
+          <EtatVide
+            message={
+              rechercheDifferee
+                ? `Aucun résultat pour « ${rechercheDifferee} ».`
+                : 'Aucun plein pour ces critères.'
+            }
+          />
         ) : (
           <Tableau>
             <thead>
@@ -702,6 +745,8 @@ export function Sorties() {
             </tbody>
           </Tableau>
         )}
+
+        {meta && <Pagination meta={meta} onPage={setPage} />}
       </Carte>
     </div>
   )

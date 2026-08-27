@@ -47,9 +47,10 @@ class SortieController extends Controller
                 $request->boolean('anomalies_seulement'),
                 fn ($q) => $q->where('anomalie', true),
             )
+            ->recherche($request->string('recherche'))
             ->orderByDesc('date_sortie')
             ->orderByDesc('id')
-            ->paginate($request->integer('par_page', 25))
+            ->paginate($this->parPage($request))
             ->withQueryString();
 
         return SortieResource::collection($sorties);

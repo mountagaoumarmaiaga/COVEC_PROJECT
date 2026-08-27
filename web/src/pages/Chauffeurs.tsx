@@ -1,6 +1,6 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Pencil, Plus, Trash2, X } from 'lucide-react'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 import {
@@ -14,11 +14,14 @@ import {
   EnteteColonne,
   EnteteEcran,
   EtatVide,
+  Pagination,
+  Recherche,
   Saisie,
   Tableau,
 } from '@/components/ui'
 import { api, erreursParChamp, messagesErreur } from '@/lib/api'
-import type { Chauffeur } from '@/types'
+import { useDiffere } from '@/lib/differe'
+import type { Chauffeur, Page } from '@/types'
 
 interface Formulaire {
   nom: string
@@ -35,11 +38,38 @@ export function Chauffeurs() {
   const [erreurs, setErreurs] = useState<Record<string, string[]>>({})
   const [messageGlobal, setMessageGlobal] = useState<string[]>([])
   const formulaireRef = useRef<HTMLFormElement>(null)
+  const [recherche, setRecherche] = useState('')
+  const [page, setPage] = useState(1)
+  const rechercheDifferee = useDiffere(recherche)
 
-  const { data: chauffeurs, isLoading } = useQuery({
-    queryKey: ['chauffeurs'],
-    queryFn: async () => (await api.get<{ data: Chauffeur[] }>('/chauffeurs')).data.data,
+  const { data: resultat, isLoading } = useQuery({
+    queryKey: ['chauffeurs', rechercheDifferee, page],
+    queryFn: async () =>
+      (
+        await api.get<Page<Chauffeur>>('/chauffeurs', {
+          params: { recherche: rechercheDifferee || undefined, page },
+        })
+      ).data,
+    // Garder la page précédente le temps du chargement évite que la liste
+    // disparaisse à chaque frappe pour réapparaître aussitôt.
+    placeholderData: keepPreviousData,
   })
+
+  const chauffeurs = resultat?.data
+  const meta = resultat?.meta
+
+  // Supprimer le dernier chauffeur d'une page laisserait l'écran sur une page
+  // qui n'existe plus, et donc vide.
+  useEffect(() => {
+    if (meta && page > meta.last_page) {
+      setPage(meta.last_page)
+    }
+  }, [meta, page])
+
+  const chercher = (valeur: string) => {
+    setRecherche(valeur)
+    setPage(1)
+  }
 
   const reinitialiser = () => {
     setFormulaire(FORMULAIRE_VIDE)
@@ -166,10 +196,23 @@ export function Chauffeurs() {
       </Carte>
 
       <Carte titre="Effectif">
+        <Recherche
+          valeur={recherche}
+          onChange={chercher}
+          placeholder="Chercher un nom ou un matricule…"
+          className="mb-5 max-w-sm"
+        />
+
         {isLoading ? (
           <Chargement />
         ) : !chauffeurs || chauffeurs.length === 0 ? (
-          <EtatVide message="Aucun chauffeur enregistré." />
+          <EtatVide
+            message={
+              rechercheDifferee
+                ? `Aucun chauffeur ne correspond à « ${rechercheDifferee} ».`
+                : 'Aucun chauffeur enregistré.'
+            }
+          />
         ) : (
           <Tableau>
             <thead>
@@ -232,6 +275,8 @@ export function Chauffeurs() {
             </tbody>
           </Tableau>
         )}
+
+        {meta && <Pagination meta={meta} onPage={setPage} />}
       </Carte>
     </div>
   )

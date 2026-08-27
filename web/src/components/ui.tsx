@@ -1,4 +1,4 @@
-import { AlertTriangle } from 'lucide-react'
+import { AlertTriangle, Search, X } from 'lucide-react'
 import type { ButtonHTMLAttributes, ComponentProps, InputHTMLAttributes, ReactNode } from 'react'
 
 import { Selecteur } from './Selecteur'
@@ -330,6 +330,104 @@ export function Guidage({
       <p className="mt-1 max-w-[70ch] text-sm leading-relaxed text-attenue">{children}</p>
       {action && <div className="mt-3">{action}</div>}
     </div>
+  )
+}
+
+/** Barre de recherche d'une liste. */
+export function Recherche({
+  valeur,
+  onChange,
+  placeholder = 'Rechercher…',
+  className = '',
+}: {
+  valeur: string
+  onChange: (valeur: string) => void
+  placeholder?: string
+  className?: string
+}) {
+  return (
+    <div className={`relative ${className}`}>
+      <Search
+        className="pointer-events-none absolute top-1/2 left-3 size-3.5 -translate-y-1/2 text-pale"
+        aria-hidden
+      />
+      <input
+        type="search"
+        value={valeur}
+        onChange={(evenement) => onChange(evenement.target.value)}
+        placeholder={placeholder}
+        aria-label={placeholder}
+        className="champ w-full pl-9"
+      />
+      {valeur !== '' && (
+        <button
+          type="button"
+          onClick={() => onChange('')}
+          aria-label="Effacer la recherche"
+          className="absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer p-1.5 text-pale transition-colors hover:text-encre"
+        >
+          <X className="size-3.5" aria-hidden />
+        </button>
+      )}
+    </div>
+  )
+}
+
+/** Ce que le serveur dit d'une page de résultats. */
+export interface MetaPage {
+  current_page: number
+  last_page: number
+  total: number
+  from: number | null
+  to: number | null
+}
+
+/**
+ * Pied de liste : la position dans l'ensemble, et de quoi se déplacer.
+ *
+ * Rien ne s'affiche tant qu'il n'y a qu'une page. Un dépôt qui démarre n'a pas
+ * à voir des commandes de navigation qui ne mènent nulle part.
+ */
+export function Pagination({
+  meta,
+  onPage,
+}: {
+  meta: MetaPage
+  onPage: (page: number) => void
+}) {
+  if (meta.last_page <= 1) {
+    return null
+  }
+
+  return (
+    <nav
+      aria-label="Pagination"
+      className="mt-5 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-filet pt-4"
+    >
+      <p className="chiffres text-xs text-pale">
+        {meta.from ?? 0}–{meta.to ?? 0} sur {meta.total}
+      </p>
+
+      <div className="flex items-center gap-6">
+        <LienAction
+          disabled={meta.current_page <= 1}
+          onClick={() => onPage(meta.current_page - 1)}
+        >
+          Précédent
+        </LienAction>
+
+        <span className="surtitre text-attenue">
+          {meta.current_page} / {meta.last_page}
+        </span>
+
+        <LienAction
+          disabled={meta.current_page >= meta.last_page}
+          onClick={() => onPage(meta.current_page + 1)}
+        >
+          Suivant
+        </LienAction>
+      </div>
+    </nav>
   )
 }
 

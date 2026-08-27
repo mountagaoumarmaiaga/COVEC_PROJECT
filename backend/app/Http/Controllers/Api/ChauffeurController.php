@@ -19,10 +19,14 @@ class ChauffeurController extends Controller
     {
         $chauffeurs = Chauffeur::query()
             ->when($request->boolean('actifs_seulement'), fn ($q) => $q->actifs())
-            ->orderBy('nom')
-            ->get();
+            ->recherche($request->string('recherche'))
+            ->orderBy('nom');
 
-        return ChauffeurResource::collection($chauffeurs);
+        return ChauffeurResource::collection(
+            $request->boolean('tous')
+                ? $chauffeurs->get()
+                : $chauffeurs->paginate($this->parPage($request))->withQueryString(),
+        );
     }
 
     public function store(ChauffeurRequest $request): JsonResponse

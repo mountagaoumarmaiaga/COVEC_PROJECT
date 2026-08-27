@@ -21,10 +21,14 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
  */
 class UtilisateurController extends Controller
 {
-    public function index(): AnonymousResourceCollection
+    public function index(Request $request): AnonymousResourceCollection
     {
         return UserResource::collection(
-            User::query()->orderBy('nom')->get(),
+            User::query()
+                ->recherche($request->string('recherche'))
+                ->orderBy('nom')
+                ->paginate($this->parPage($request))
+                ->withQueryString(),
         );
     }
 

@@ -1,6 +1,6 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Pencil, Plus, Trash2, X } from 'lucide-react'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 import {
@@ -14,13 +14,16 @@ import {
   EnteteColonne,
   EnteteEcran,
   EtatVide,
+  Pagination,
+  Recherche,
   Liste,
   Saisie,
   Tableau,
 } from '@/components/ui'
 import { api, erreursParChamp, messagesErreur } from '@/lib/api'
+import { useDiffere } from '@/lib/differe'
 import { formaterLitres, formaterMontant } from '@/lib/format'
-import type { Carburant, ModeSuivi, Vehicule } from '@/types'
+import type { Carburant, ModeSuivi, Vehicule, Page } from '@/types'
 
 interface Formulaire {
   code: string
@@ -53,10 +56,38 @@ export function Vehicules() {
     queryFn: async () => (await api.get<{ data: Carburant[] }>('/carburants')).data.data,
   })
 
-  const { data: vehicules, isLoading } = useQuery({
-    queryKey: ['vehicules'],
-    queryFn: async () => (await api.get<{ data: Vehicule[] }>('/vehicules')).data.data,
+  const [recherche, setRecherche] = useState('')
+  const [page, setPage] = useState(1)
+  const rechercheDifferee = useDiffere(recherche)
+
+  const { data: resultat, isLoading } = useQuery({
+    queryKey: ['vehicules', rechercheDifferee, page],
+    queryFn: async () =>
+      (
+        await api.get<Page<Vehicule>>('/vehicules', {
+          params: { recherche: rechercheDifferee || undefined, page },
+        })
+      ).data,
+    // Garder la page précédente le temps du chargement évite que la liste
+    // disparaisse à chaque frappe pour réapparaître aussitôt.
+    placeholderData: keepPreviousData,
   })
+
+  const vehicules = resultat?.data
+  const meta = resultat?.meta
+
+  // Supprimer la dernière ligne d'une page laisserait l'écran sur une page qui
+  // n'existe plus, et donc vide.
+  useEffect(() => {
+    if (meta && page > meta.last_page) {
+      setPage(meta.last_page)
+    }
+  }, [meta, page])
+
+  const chercher = (valeur: string) => {
+    setRecherche(valeur)
+    setPage(1)
+  }
 
   const reinitialiser = () => {
     setFormulaire(FORMULAIRE_VIDE)
@@ -252,10 +283,23 @@ export function Vehicules() {
       </Carte>
 
       <Carte titre="Parc">
+        <Recherche
+          valeur={recherche}
+          onChange={chercher}
+          placeholder="Chercher un code ou une désignation…"
+          className="mb-5 max-w-sm"
+        />
+
         {isLoading ? (
           <Chargement />
         ) : !vehicules || vehicules.length === 0 ? (
-          <EtatVide message="Aucun véhicule enregistré." />
+          <EtatVide
+            message={
+              rechercheDifferee
+                ? `Aucun résultat pour « ${rechercheDifferee} ».`
+                : 'Aucun véhicule enregistré.'
+            }
+          />
         ) : (
           <Tableau>
             <thead>
@@ -340,6 +384,8 @@ export function Vehicules() {
             </tbody>
           </Tableau>
         )}
+
+        {meta && <Pagination meta={meta} onPage={setPage} />}
       </Carte>
     </div>
   )

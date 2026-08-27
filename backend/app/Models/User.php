@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\Role;
+use App\Models\Concerns\Recherchable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -21,6 +22,8 @@ use Laravel\Sanctum\HasApiTokens;
  */
 class User extends Authenticatable
 {
+    use Recherchable;
+
     use HasApiTokens;
     use Notifiable;
 
@@ -47,6 +50,12 @@ class User extends Authenticatable
     public function peutGerer(): bool
     {
         return $this->role->peutGerer();
+    }
+
+    /** @return array<int, string> */
+    protected function colonnesRecherchees(): array
+    {
+        return ['nom', 'matricule'];
     }
 
     public function scopeActifs(Builder $query): Builder
