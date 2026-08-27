@@ -69,7 +69,7 @@ class ExportMensuelTest extends TestCase
         return $lignes;
     }
 
-    public function test_le_classeur_contient_les_quatre_onglets_attendus(): void
+    public function test_le_classeur_contient_les_cinq_feuilles_attendues(): void
     {
         $chemin = app(ExportMensuel::class)->generer(2026, 8);
 
@@ -87,7 +87,7 @@ class ExportMensuelTest extends TestCase
         @unlink($chemin);
 
         $this->assertSame(
-            ['Synthèse', 'Entrées', 'Sorties', 'Consommation par véhicule'],
+            ['Synthèse', 'Livraisons', 'Pleins servis', 'Par véhicule', 'Par chauffeur'],
             $onglets,
         );
     }
@@ -95,7 +95,7 @@ class ExportMensuelTest extends TestCase
     public function test_l_onglet_des_sorties_reprend_les_pleins_du_mois(): void
     {
         $chemin = app(ExportMensuel::class)->generer(2026, 8);
-        $lignes = $this->lignes($chemin, 'Sorties');
+        $lignes = $this->lignes($chemin, 'Pleins servis');
         @unlink($chemin);
 
         // En-tête, trois pleins, ligne de total.

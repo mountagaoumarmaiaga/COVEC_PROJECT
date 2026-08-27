@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\Carburant;
+use App\Models\Chauffeur;
 use App\Models\Cuve;
 use App\Models\Entree;
 use App\Models\Sortie;
@@ -288,6 +289,51 @@ class StockService
                     'nombre_anomalies' => $sorties->where('anomalie', true)->count(),
                 ];
             })
+            ->values();
+    }
+
+    /**
+     * Activité par chauffeur sur la période (§4).
+     *
+     * Le registre sert aussi à répondre à « qui a pris combien » : sans cette
+     * vue, il faudrait dépouiller le journal des pleins à la main.
+     *
+     * @param  int|null  $annee  Restreint au mois indiqué si année et mois sont fournis.
+     */
+    public function consommationParChauffeur(?int $annee = null, ?int $mois = null): Collection
+    {
+        $periode = $annee !== null && $mois !== null;
+
+        return Chauffeur::query()
+            ->with(['sorties' => function (HasMany $q) use ($periode, $annee, $mois) {
+                $q->with('vehicule.carburant');
+
+                if ($periode) {
+                    $q->duMois($annee, $mois);
+                }
+            }])
+            ->orderBy('nom')
+            ->get()
+            ->map(function (Chauffeur $chauffeur) {
+                $sorties = $chauffeur->sorties;
+
+                return [
+                    'chauffeur' => [
+                        'id' => $chauffeur->id,
+                        'nom' => $chauffeur->nom,
+                        'matricule' => $chauffeur->matricule,
+                    ],
+                    'nombre_pleins' => $sorties->count(),
+                    'litres_servis' => round((float) $sorties->sum('litres_servis'), 2),
+                    'montant' => round((float) $sorties->sum('montant'), 2),
+                    // Un chauffeur peut conduire plusieurs véhicules dans le mois.
+                    'vehicules' => $sorties->pluck('vehicule.code')->unique()->sort()->values()->all(),
+                    'nombre_anomalies' => $sorties->where('anomalie', true)->count(),
+                ];
+            })
+            // Un chauffeur qui n'a rien pris ce mois-ci alourdirait le tableau
+            // sans rien apprendre.
+            ->filter(fn (array $l) => $l['nombre_pleins'] > 0)
             ->values();
     }
 

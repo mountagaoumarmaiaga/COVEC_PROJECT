@@ -52,6 +52,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // ---------------------------------------------------------------
     Route::get('stock', [StockController::class, 'index'])->name('stock.index');
     Route::get('exports/mensuel', [ExportController::class, 'mensuel'])->name('exports.mensuel');
+    Route::get('exports/rapport', [ExportController::class, 'rapport'])->name('exports.rapport');
 
     Route::get('vehicules', [VehiculeController::class, 'index'])->name('vehicules.index');
     Route::get('vehicules/{vehicule}', [VehiculeController::class, 'show'])->name('vehicules.show');

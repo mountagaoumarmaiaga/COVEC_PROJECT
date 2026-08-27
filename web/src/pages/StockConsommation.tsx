@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { AlertTriangle, Download } from 'lucide-react'
+import { AlertTriangle, FileSpreadsheet, FileText } from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
@@ -206,6 +206,14 @@ function TableauConsommation({ lignes }: { lignes: LigneConsommation[] }) {
   )
 }
 
+/*
+  Les deux liens d'export partagent leur allure. La hauteur suit celle des
+  boutons secondaires — quarante-quatre pixels — pour qu'un lien d'export ne
+  soit pas plus difficile à viser qu'un bouton.
+*/
+const LIEN_EXPORT =
+  'inline-flex h-11 items-center gap-2 rounded-net border border-arete bg-leve px-5 text-sm font-medium text-encre transition-colors hover:border-encre hover:bg-papier-profond'
+
 export function StockConsommation() {
   const maintenant = new Date()
   const [annee, setAnnee] = useState(maintenant.getFullYear())
@@ -292,10 +300,17 @@ export function StockConsommation() {
                 />
                 <a
                   href={`/api/exports/mensuel?annee=${annee}&mois=${mois}`}
-                  className="inline-flex h-9 items-center gap-2 rounded-net border border-arete px-5 text-sm font-medium text-encre transition-colors hover:bg-papier-profond"
+                  className={LIEN_EXPORT}
                 >
-                  <Download className="size-4" aria-hidden />
-                  Export Excel
+                  <FileSpreadsheet className="size-4" aria-hidden />
+                  Classeur Excel
+                </a>
+                <a
+                  href={`/api/exports/rapport?annee=${annee}&mois=${mois}`}
+                  className={LIEN_EXPORT}
+                >
+                  <FileText className="size-4" aria-hidden />
+                  Rapport PDF
                 </a>
               </>
             }
