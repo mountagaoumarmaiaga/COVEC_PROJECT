@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 import path from 'node:path'
 import { defineConfig } from 'vite'
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: { '@': path.resolve(import.meta.dirname, './src') },
@@ -18,8 +18,12 @@ export default defineConfig({
     `base` doit correspondre au sous-dossier : la page est servie depuis
     n'importe quelle adresse (/sorties, /entrees…), donc les chemins des
     fichiers compilés doivent être absolus.
+
+    En développement, en revanche, Vite sert l'application lui-même : lui
+    imposer le même préfixe déplacerait l'adresse de travail vers /app/ et
+    ferait chercher le favicon au mauvais endroit, sans rien apporter.
   */
-  base: '/app/',
+  base: command === 'build' ? '/app/' : '/',
   build: {
     outDir: path.resolve(import.meta.dirname, '../backend/public/app'),
     emptyOutDir: true,
@@ -38,4 +42,4 @@ export default defineConfig({
       '/sanctum': { target: 'http://127.0.0.1:8000', changeOrigin: true },
     },
   },
-})
+}))
