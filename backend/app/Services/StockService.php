@@ -53,17 +53,22 @@ class StockService
     /**
      * Litres et montants reçus, par carburant, en une seule requête.
      *
+     * L'agrégat s'appelle « somme_montant » et non « montant » : le modèle
+     * Entree possède un accesseur de ce nom. Un alias SQL homonyme est masqué
+     * par l'accesseur, qui multiplie alors des colonnes absentes de la requête
+     * groupée et renvoie zéro — sans la moindre erreur.
+     *
      * @return array<int, array{litres: float, montant: float}>
      */
     private function entreesParCarburant(): array
     {
         return $this->entrees ??= Entree::query()
-            ->selectRaw('carburant_id, SUM(quantite_litres) as litres, SUM(quantite_litres * prix_unitaire) as montant')
+            ->selectRaw('carburant_id, SUM(quantite_litres) as litres, SUM(quantite_litres * prix_unitaire) as somme_montant')
             ->groupBy('carburant_id')
             ->get()
             ->mapWithKeys(fn ($l) => [(int) $l->carburant_id => [
                 'litres' => (float) $l->litres,
-                'montant' => (float) $l->montant,
+                'montant' => (float) $l->somme_montant,
             ]])
             ->all();
     }
@@ -82,13 +87,13 @@ class StockService
             ->join('vehicules', 'vehicules.id', '=', 'sorties.vehicule_id')
             ->selectRaw('vehicules.carburant_id as carburant_id')
             ->selectRaw('SUM(sorties.litres_servis) as litres')
-            ->selectRaw('SUM(sorties.litres_servis * sorties.prix_unitaire) as montant')
+            ->selectRaw('SUM(sorties.litres_servis * sorties.prix_unitaire) as somme_montant')
             ->selectRaw('SUM(CASE WHEN sorties.anomalie THEN 1 ELSE 0 END) as anomalies')
             ->groupBy('vehicules.carburant_id')
             ->get()
             ->mapWithKeys(fn ($l) => [(int) $l->carburant_id => [
                 'litres' => (float) $l->litres,
-                'montant' => (float) $l->montant,
+                'montant' => (float) $l->somme_montant,
                 'anomalies' => (int) $l->anomalies,
             ]])
             ->all();
@@ -172,7 +177,7 @@ class StockService
     {
         $entrees = Entree::query()
             ->duMois($annee, $mois)
-            ->selectRaw('carburant_id, COUNT(*) as nombre, SUM(quantite_litres) as litres, SUM(quantite_litres * prix_unitaire) as montant')
+            ->selectRaw('carburant_id, COUNT(*) as nombre, SUM(quantite_litres) as litres, SUM(quantite_litres * prix_unitaire) as somme_montant')
             ->groupBy('carburant_id')
             ->get()
             ->keyBy('carburant_id');
@@ -183,7 +188,7 @@ class StockService
             ->selectRaw('vehicules.carburant_id as carburant_id')
             ->selectRaw('COUNT(*) as nombre')
             ->selectRaw('SUM(sorties.litres_servis) as litres')
-            ->selectRaw('SUM(sorties.litres_servis * sorties.prix_unitaire) as montant')
+            ->selectRaw('SUM(sorties.litres_servis * sorties.prix_unitaire) as somme_montant')
             ->selectRaw('SUM(CASE WHEN sorties.anomalie THEN 1 ELSE 0 END) as anomalies')
             ->groupBy('vehicules.carburant_id')
             ->get()
@@ -198,7 +203,7 @@ class StockService
                 'entrees' => [
                     'nombre' => (int) ($e->nombre ?? 0),
                     'litres' => round((float) ($e->litres ?? 0), 2),
-                    'montant' => round((float) ($e->montant ?? 0), 2),
+                    'montant' => round((float) ($e->somme_montant ?? 0), 2),
                 ],
                 'sorties' => [
                     'nombre' => (int) ($s->nombre ?? 0),
@@ -206,7 +211,7 @@ class StockService
                     // Somme des montants réellement enregistrés, et non une
                     // estimation au prix moyen : chaque plein porte le prix
                     // du litre en vigueur au moment où il a été servi.
-                    'montant' => round((float) ($s->montant ?? 0), 2),
+                    'montant' => round((float) ($s->somme_montant ?? 0), 2),
                     'nombre_anomalies' => (int) ($s->anomalies ?? 0),
                 ],
             ];
