@@ -10,6 +10,7 @@ import { FournisseurAuth, useAuth } from '@/lib/auth'
 import { Carburants } from '@/pages/Carburants'
 import { Chauffeurs } from '@/pages/Chauffeurs'
 import { Connexion } from '@/pages/Connexion'
+import { ErreurApplication, Introuvable } from '@/pages/Introuvable'
 import { Entrees } from '@/pages/Entrees'
 import { MonCompte } from '@/pages/MonCompte'
 import { Sorties } from '@/pages/Sorties'
@@ -25,7 +26,19 @@ const client = new QueryClient({
       // chiffre en cache qui ferait douter le gestionnaire.
       staleTime: 10_000,
       refetchOnWindowFocus: true,
-      retry: 1,
+      // Un refus d'authentification, un droit manquant ou une saisie invalide
+      // donneront la même réponse au second essai : seules les pannes
+      // passagères — coupure réseau, serveur momentanément indisponible —
+      // méritent d'être rejouées.
+      retry: (tentatives, erreur) => {
+        const statut = (erreur as { response?: { status?: number } })?.response?.status
+
+        if (statut !== undefined && statut >= 400 && statut < 500) {
+          return false
+        }
+
+        return tentatives < 1
+      },
     },
   },
 })
@@ -71,6 +84,7 @@ const routeur = createBrowserRouter([
   {
     path: '/',
     element: <Portail />,
+    errorElement: <ErreurApplication />,
     children: [
       { index: true, element: <StockConsommation /> },
       { path: 'entrees', element: <Entrees /> },
@@ -108,6 +122,9 @@ const routeur = createBrowserRouter([
           </ReserveGestionnaire>
         ),
       },
+      // En dernier : Laravel sert index.html pour n'importe quelle adresse,
+      // donc c'est ici que se rattrapent celles qui ne mènent nulle part.
+      { path: '*', element: <Introuvable /> },
     ],
   },
 ])
