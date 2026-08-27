@@ -108,6 +108,15 @@ return [
              * À n'activer que sur le point d'accès direct : derrière un pooler
              * en mode transaction, une connexion réutilisée peut hériter de
              * l'état laissé par la requête précédente.
+             *
+             * DÉCONSEILLÉ AVEC NEON, et laissé à false pour cette raison. Neon
+             * suspend son calcul après quelques minutes sans activité et ferme
+             * les connexions ouvertes. PHP, lui, garde la sienne au chaud et la
+             * réutilise : la requête suivante part dans une socket morte et
+             * échoue sur « SSL SYSCALL error: connection abort », sans que rien
+             * n'ait changé dans le code. Le gain de latence ne vaut pas cette
+             * panne intermittente — d'autant qu'il disparaît dès que
+             * l'application est hébergée près de la base.
              */
             'options' => array_filter([
                 PDO::ATTR_PERSISTENT => env('DB_PERSISTENT', false),
